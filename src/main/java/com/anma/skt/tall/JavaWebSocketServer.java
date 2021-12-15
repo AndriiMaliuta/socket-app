@@ -1,5 +1,8 @@
 package com.anma.skt.tall;
 
+import com.anma.skt.models.Message;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.java_websocket.WebSocket;
 import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
@@ -7,14 +10,18 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 public class JavaWebSocketServer extends WebSocketServer {
+
+    Gson gson = new GsonBuilder().create();
 
     public JavaWebSocketServer(int port) throws UnknownHostException {
         super(new InetSocketAddress(port));
@@ -45,9 +52,33 @@ public class JavaWebSocketServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        broadcast(message);
+        Message msg = new Message("Hi there!", LocalDateTime.now(), "John Doe");
+        String msgJson = gson.toJson(msg);
+        broadcast(msgJson);
+
         System.out.println(conn + ": " + message);
     }
+
+    @Override
+    public void onMessage(WebSocket conn, ByteBuffer message) {
+
+        Message msg = new Message("Hi there!", LocalDateTime.now(), "John Doe");
+        String msgJson = gson.toJson(msg);
+        broadcast(msgJson);
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(message.array())));
+        StringBuilder builder = new StringBuilder();
+        try {
+            while (reader.readLine() != null) {
+                    builder.append(reader.readLine());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        System.out.println(gson.toJson(builder));
+    }
+
+
 
     //    @Override
     public void onMessageAll(WebSocket conn, ByteBuffer message) {
