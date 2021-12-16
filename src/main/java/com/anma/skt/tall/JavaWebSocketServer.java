@@ -8,6 +8,7 @@ import org.java_websocket.drafts.Draft;
 import org.java_websocket.drafts.Draft_6455;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.java_websocket.util.ByteBufferUtils;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -56,6 +57,9 @@ public class JavaWebSocketServer extends WebSocketServer {
         String msgJson = gson.toJson(msg);
         broadcast(msgJson);
 
+        ByteBuffer byteBuffer = ByteBuffer.wrap("Hello".getBytes());
+        ByteBufferUtils.transferByteBuffer(byteBuffer, ByteBuffer.allocate(2));
+
         System.out.println(conn + ": " + message);
     }
 
@@ -77,8 +81,6 @@ public class JavaWebSocketServer extends WebSocketServer {
             }
         System.out.println(gson.toJson(builder));
     }
-
-
 
     //    @Override
     public void onMessageAll(WebSocket conn, ByteBuffer message) {
