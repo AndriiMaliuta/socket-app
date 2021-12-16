@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+<body>
+<h2>Socket</h2>
+
+<div>
+    <input type="text" name="msg" id="msg" />
+    <br />
+    <button id="msg-btn">Send</button>
+</div>
+
+<script>
+    const btn = document.querySelector("#msg-btn");
+    const text = document.querySelector("#msg");
+
+    class Message {
+        name = "";
+        time = "";
+        author = "";
+        constructor(name, time, author) {
+            this.name = name;
+            this.time = time;
+            this.author = author;
+        }
+    }
+
+    btn.addEventListener("click", (evt) => {
+        let message = new Message(
+            "Hello from client",
+            Date.now().toString(),
+            "Ann Doe"
+        );
+
+        evt.preventDefault();
+        // socket.send(text.value);
+        ArrayBuffer.
+        socket.send(message);
+    });
+
+    const socket = new WebSocket("ws://localhost:7072/chat");
+    socket.onopen = function (event) {
+        console.log("WebSocket is open now.");
+    };
+    socket.onmessage = function (event) {
+        console.info("WebSocket message received:", event);
+        console.log(event.data);
+    };
+    socket.onclose = () => {
+        console.log("socket closed");
+    };
+</script>
+</body>
+</html>
